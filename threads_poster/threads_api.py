@@ -90,3 +90,19 @@ def check_container_status(
     status = data.get("status")
     logger.debug("Container %s status %s", container_id, status)
     return status
+
+
+def get_profile_details(
+    access_token: str,
+    user_id: str,
+    timeout: int = 30,
+) -> dict:
+    url = f"{THREADS_API_BASE}/{user_id}"
+    params = {
+        "fields": "id,username,display_name",
+        "access_token": access_token,
+    }
+    response = requests.get(url, params=params, timeout=timeout)
+    data = _handle_response(response)
+    logger.debug("Fetched Threads profile details for %s: %s", user_id, data)
+    return data

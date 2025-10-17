@@ -25,6 +25,8 @@ class Settings:
     claude_model: str
     claude_max_tokens: int
     caption_fallback: str
+    telegram_bot_token: Optional[str]
+    telegram_chat_id: Optional[str]
 
 
 def _get_env(name: str, default: Optional[str] = None) -> str:
@@ -51,4 +53,6 @@ def load_settings() -> Settings:
         claude_model=os.environ.get("THREADS_CLAUDE_MODEL", "claude-3-5-sonnet-20241022"),
         claude_max_tokens=claude_max_tokens,
         caption_fallback=caption_fallback,
+        telegram_bot_token=os.environ.get("TELEGRAM_BOT_TOKEN") or None,
+        telegram_chat_id=os.environ.get("TELEGRAM_CHAT_ID") or None,
     )
