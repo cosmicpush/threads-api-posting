@@ -59,6 +59,6 @@ Optional variables:
 - `OCI_PROFILE` to select a non-default profile from `~/.oci/config`
 - `THREADS_CLAUDE_MODEL` to target a different Claude vision model
 - `THREADS_CLAUDE_MAX_TOKENS` to adjust the caption response limit
-- `THREADS_CAPTION_FALLBACK` to set fallback text if the Claude request fails
+- `THREADS_CAPTION_FALLBACK` to set fallback text if Claude succeeds but returns no text
 - `THREADS_MEDIA_WAIT_SECONDS` to adjust the media processing wait
 - `THREADS_PRESIGN_EXPIRATION_SECONDS` to tweak presigned URL validity

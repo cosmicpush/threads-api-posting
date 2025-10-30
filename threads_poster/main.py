@@ -182,8 +182,8 @@ def main() -> int:
             logger.info("Generated caption for %s", selected_object.key)
         except ClaudeCaptionError as exc:
             logger.error("Failed to generate caption via Claude: %s", exc)
-            caption = settings.caption_fallback
-            logger.info("Using fallback caption")
+            caption = ""
+            logger.info("Caption generation failed; posting without caption")
     else:
         caption = ""
         logger.info("Caption generation disabled; posting without caption")
