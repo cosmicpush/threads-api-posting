@@ -38,7 +38,10 @@ class OCIStorageClient:
         profile: Optional[str] = None,
     ) -> None:
         try:
-            config = oci.config.from_file(profile_name=profile)
+            if profile:
+                config = oci.config.from_file(profile_name=profile)
+            else:
+                config = oci.config.from_file()
         except Exception as exc:  # pragma: no cover - environment specific
             raise OCIStorageError(f"Failed to load OCI configuration: {exc}") from exc
 
