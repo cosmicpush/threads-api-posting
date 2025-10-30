@@ -6,7 +6,7 @@ Automates Threads posts by selecting a random PNG from an OCI Object Storage buc
 - Python 3.10+
 - OCI credentials (via `~/.oci/config`) with access to `THREADS_BUCKET`
 - Threads Graph API access token with publish permissions
-- Claude API key with access to the latest vision-capable model (default: `claude-3-5-sonnet-20241022`)
+- Claude API key with access to the latest vision-capable model (default: `claude-sonnet-4-5-20250929`)
 
 ## Setup
 1. Install dependencies:

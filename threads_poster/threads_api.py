@@ -99,7 +99,7 @@ def get_profile_details(
 ) -> dict:
     url = f"{THREADS_API_BASE}/{user_id}"
     params = {
-        "fields": "id,username,display_name",
+        "fields": "id,username",
         "access_token": access_token,
     }
     response = requests.get(url, params=params, timeout=timeout)

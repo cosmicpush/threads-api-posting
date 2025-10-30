@@ -77,7 +77,7 @@ def load_settings() -> Settings:
         media_wait_seconds=wait_seconds,
         presign_expiration_seconds=presign_expiration_seconds,
         anthropic_api_key=anthropic_key,
-        claude_model=os.environ.get("THREADS_CLAUDE_MODEL", "claude-3-5-sonnet-20241022"),
+        claude_model=os.environ.get("THREADS_CLAUDE_MODEL", "claude-sonnet-4-5-20250929"),
         claude_max_tokens=claude_max_tokens,
         caption_fallback=caption_fallback,
         enable_captioning=enable_captioning,
