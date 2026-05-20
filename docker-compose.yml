@@ -1,0 +1,16 @@
+services:
+  poster:
+    image: ghcr.io/cosmicpush/threads-api-posting:latest
+    pull_policy: always
+    container_name: threads-poster
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      TZ: Asia/Kolkata
+      QUOTES_JSON_PATH: /data/quotes.json
+      LOCKFILE_PATH: /var/lock/threads_poster/threads_poster.lock
+    volumes:
+      # Host file -> container path. Set QUOTES_HOST_PATH in .env, e.g.
+      # QUOTES_HOST_PATH=/home/ubuntu/threads-api-posting/quotes.json
+      - ${QUOTES_HOST_PATH}:/data/quotes.json

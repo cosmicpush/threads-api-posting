@@ -15,16 +15,29 @@ class ThreadsApiError(RuntimeError):
 
 
 def _handle_response(response: requests.Response) -> dict:
-    try:
-        data = response.json()
-    except requests.JSONDecodeError as exc:  # pragma: no cover - defensive guard
-        raise ThreadsApiError("Failed to parse Threads API response as JSON") from exc
-
     if response.status_code >= 400:
-        message = data.get("error", {}).get("message", response.text)
+        message: Optional[str] = None
+        try:
+            payload = response.json()
+        except ValueError:
+            payload = None
+        if isinstance(payload, dict):
+            message = (payload.get("error") or {}).get("message")
+        if not message:
+            message = (response.text or "")[:300] or "no response body"
         raise ThreadsApiError(f"Threads API error ({response.status_code}): {message}")
 
-    return data
+    try:
+        return response.json()
+    except ValueError as exc:
+        raise ThreadsApiError("Failed to parse Threads API response as JSON") from exc
+
+
+def _require_field(data: dict, field: str, label: str) -> str:
+    value = data.get(field)
+    if not value:
+        raise ThreadsApiError(f"Threads API response did not include {label}")
+    return value
 
 
 def create_media_container(
@@ -41,13 +54,8 @@ def create_media_container(
         "text": caption,
         "access_token": access_token,
     }
-
     response = requests.post(url, data=payload, timeout=timeout)
-    data = _handle_response(response)
-    container_id = data.get("id")
-    if not container_id:
-        raise ThreadsApiError("Threads API response did not include a container ID")
-
+    container_id = _require_field(_handle_response(response), "id", "a container ID")
     logger.debug("Created media container %s", container_id)
     return container_id
 
@@ -63,13 +71,8 @@ def publish_container(
         "creation_id": container_id,
         "access_token": access_token,
     }
-
     response = requests.post(url, data=payload, timeout=timeout)
-    data = _handle_response(response)
-    thread_id = data.get("id")
-    if not thread_id:
-        raise ThreadsApiError("Threads API response did not include a thread ID")
-
+    thread_id = _require_field(_handle_response(response), "id", "a thread ID")
     logger.debug("Published container %s as thread %s", container_id, thread_id)
     return thread_id
 
@@ -80,11 +83,7 @@ def check_container_status(
     timeout: int = 30,
 ) -> Optional[str]:
     url = f"{THREADS_API_BASE}/{container_id}"
-    params = {
-        "fields": "status",
-        "access_token": access_token,
-    }
-
+    params = {"fields": "status", "access_token": access_token}
     response = requests.get(url, params=params, timeout=timeout)
     data = _handle_response(response)
     status = data.get("status")
@@ -98,10 +97,7 @@ def get_profile_details(
     timeout: int = 30,
 ) -> dict:
     url = f"{THREADS_API_BASE}/{user_id}"
-    params = {
-        "fields": "id,username",
-        "access_token": access_token,
-    }
+    params = {"fields": "id,username,name", "access_token": access_token}
     response = requests.get(url, params=params, timeout=timeout)
     data = _handle_response(response)
     logger.debug("Fetched Threads profile details for %s: %s", user_id, data)
