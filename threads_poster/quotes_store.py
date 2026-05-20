@@ -86,6 +86,10 @@ class QuotesStore:
                 fh.write("\n")
                 fh.flush()
                 os.fsync(fh.fileno())
+            # mkstemp creates files at mode 0600 — make the result readable
+            # by others (especially the host user inspecting via SSH) before
+            # the atomic rename.
+            os.chmod(tmp_path, 0o644)
             os.replace(tmp_path, self.path)
         except Exception as exc:
             try:
