@@ -11,6 +11,10 @@ services:
       QUOTES_JSON_PATH: /data/quotes.json
       LOCKFILE_PATH: /var/lock/threads_poster/threads_poster.lock
     volumes:
-      # Host file -> container path. Set QUOTES_HOST_PATH in .env, e.g.
-      # QUOTES_HOST_PATH=/home/ubuntu/threads-api-posting/quotes.json
-      - ${QUOTES_HOST_PATH}:/data/quotes.json
+      # Host directory -> container's /data. Must be a directory (not a single
+      # file) so Python's atomic rewrite of quotes.json works — bind-mounting
+      # a single file pins the inode and breaks os.replace.
+      # Set QUOTES_HOST_DIR in .env, e.g.
+      # QUOTES_HOST_DIR=/home/ubuntu/threads-api-posting/data
+      # The directory must contain quotes.json and be writable by uid 10001.
+      - ${QUOTES_HOST_DIR}:/data

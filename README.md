@@ -38,11 +38,13 @@ cd /home/ubuntu/threads-api-posting
 # Fetch only the compose file from the repo (you don't need the rest on the VPS)
 curl -fsSLO https://raw.githubusercontent.com/cosmicpush/threads-api-posting/master/docker-compose.yml
 
-# Place quotes.json here (the image generator should write to this path,
-# or copy it in once)
-touch quotes.json
+# Place quotes.json inside a 'data' subdirectory (the directory, not the
+# file, is what gets bind-mounted — single-file bind mounts break atomic
+# rewrites of quotes.json).
+mkdir -p data
+touch data/quotes.json
 # The container runs as uid 10001 internally — give it write permission
-sudo chown 10001:10001 quotes.json
+sudo chown -R 10001:10001 data
 
 # Create .env (see "Configuration" below)
 nano .env
@@ -61,8 +63,9 @@ B2_KEY_ID=
 B2_APPLICATION_KEY=
 B2_PREFIX=threads/
 
-# === Host path to quotes.json (required for the bind mount) ===
-QUOTES_HOST_PATH=/home/ubuntu/threads-api-posting/quotes.json
+# === Host directory containing quotes.json (required for the bind mount) ===
+# Must be a directory (not a single file) so atomic file replacement works.
+QUOTES_HOST_DIR=/home/ubuntu/threads-api-posting/data
 
 # === Tuning (optional) ===
 THREADS_MEDIA_WAIT_SECONDS=30
