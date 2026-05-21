@@ -12,7 +12,7 @@ Each entry in `quotes.json` must include at least `image` (the object key in the
 - **One container**, started once, kept alive by `restart: unless-stopped`.
 - Inside it, [supercronic](https://github.com/aptible/supercronic) fires `python -m threads_poster` on a schedule defined in [`crontab`](./crontab).
 - Schedule times are interpreted in the container's timezone, set via `TZ` in `docker-compose.yml` (default: `Asia/Kolkata`).
-- One post per cron firing. Default schedule = hourly at :30, 09:30–21:30 IST (13 posts/day).
+- One post per cron firing. Default schedule = every 90 minutes from 09:30 to 21:30 IST (9 posts/day: 09:30, 11:00, 12:30, 14:00, 15:30, 17:00, 18:30, 20:00, 21:30).
 
 ## Published image
 

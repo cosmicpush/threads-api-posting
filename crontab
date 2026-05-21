@@ -1,6 +1,13 @@
 # supercronic crontab — times are interpreted in the TZ set on the container
-# (see docker-compose.yml). Default schedule below = hourly at :30,
-# 09:30 through 21:30 in the container's local timezone.
+# (see docker-compose.yml).
+#
+# Schedule: every 90 minutes from 09:30 to 21:30 in the container's local TZ.
+# Concrete firings (9 posts/day):
+#   09:30  11:00  12:30  14:00  15:30  17:00  18:30  20:00  21:30
+#
+# Cron doesn't natively express 1.5h intervals, so we use two lines —
+# one for the :30 slots and one for the :00 slots.
 #
 # Format: minute hour day-of-month month day-of-week command
-30 9-21 * * * python -m threads_poster
+30 9,12,15,18,21 * * * python -m threads_poster
+0  11,14,17,20   * * * python -m threads_poster
